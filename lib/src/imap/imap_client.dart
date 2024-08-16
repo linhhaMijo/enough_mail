@@ -2709,12 +2709,17 @@ class ImapClient extends ClientBase {
       log('unexpected SERVER response: [$imapResponse]');
     }
   }
+  
+  bool enableHandleUntaggedAsNoop= false;
 
   /// Handles an untagged response from the server
   void onUntaggedResponse(ImapResponse imapResponse) {
     final task = _currentCommandTask;
     if (task == null || !task.parseUntaggedResponse(imapResponse)) {
       log('untagged not handled: [$imapResponse] by task $task');
+      if (enableHandleUntaggedAsNoop) {
+        NoopParser(this, _selectedMailbox).parseUntagged(imapResponse, null);
+      }
     }
   }
 
