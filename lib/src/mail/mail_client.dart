@@ -1674,6 +1674,12 @@ class MailClient {
     );
     _mailboxes?.remove(mailbox);
   }
+  
+  void enableUntaggedOnNotHandleAsNoop() {
+    if (_incomingMailClient is _IncomingImapClient) {
+      (_incomingMailClient as _IncomingImapClient).enableHandleUntaggedAsNoop();
+    }
+  }
 }
 
 /// Defines the  thread fetching preference
@@ -1862,6 +1868,10 @@ class _IncomingImapClient extends _IncomingMailClient {
         ),
         super(downloadSizeLimit, config, mailClient) {
     eventBus.on<ImapEvent>().listen(_onImapEvent);
+  }
+  
+  void enableHandleUntaggedAsNoop() {
+    _imapClient.enableHandleUntaggedAsNoop = true;
   }
 
   @override
